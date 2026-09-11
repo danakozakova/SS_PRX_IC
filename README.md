@@ -1,3 +1,3 @@
 # SS_PRX_IC
 Inštalácia:
-https://www.perplexity.ai/computer/a/9e33f147-e111-4e28-a974-21d5fabcecab
+https://www.perplexity.ai/computer/a/7920c975-2290-4183-8c24-b04c421ab789
