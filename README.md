@@ -11,7 +11,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 3. Aktivácia
 
-.\.venv\Scripts\Activate.ps1
+ .\.venv\Scripts\Activate.ps1
 
 4. Kivy
 
