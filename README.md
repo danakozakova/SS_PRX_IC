@@ -15,12 +15,12 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 4. Kivy
 
-uv pip install --python .\.venv\Scripts\python.exe "kivy==2.3.1"
+uv pip install --python .\\.venv\Scripts\python.exe "kivy==2.3.1"
 
 
 5. Overenie:
 
-.\.venv\Scripts\python.exe -c "import sys, kivy; print(sys.version); print(kivy.__version__)"
+.\\.venv\Scripts\python.exe -c "import sys, kivy; print(sys.version); print(kivy.__version__)"
 
 6. Ak Kivy nepreslo
 
