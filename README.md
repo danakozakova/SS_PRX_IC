@@ -1,6 +1,10 @@
 # SS_PRX_IC
-TEST
-https://forms.cloud.microsoft/e/0aM5GzVmbK
+
+
+NAHRAT SUBOR:
+- [nahrat](https://spstv-my.sharepoint.com/:f:/g/personal/dana_kozakova_strednaskolats_sk/IgDSveBHDeoFTrtsvS66TLU6AdPxIi84yfczrnUmS7Vk4qI)
+
+---
 
 ## Inštalácia:
 
