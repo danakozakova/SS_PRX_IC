@@ -8,26 +8,25 @@ Pracujeme v `app.py`. Keď niečo nefunguje, prvé je **prečítať chybu v term
 
 > Spustenie: v termináli VS Code (s aktívnym `.venv`) napíš `python app.py`.
 
+> **Ako čítať pseudokód nižšie:** je to **recept**, nie hotový kód na skopírovanie. Hovorí, *čo* má appka spraviť a v akom poradí. Tvoja úloha je prepísať každý krok do skutočného Pythonu — na presné názvy, zátvorky a odsadenie prídeš sám (a práve to sa dnes učíš).
+
 ---
 
 ## Etuda 0 — Rozcvička: nadpis a tlačidlo pod sebou
 
 Aby sme mali čo klikať a kam písať výsledok, poskladáme si z minula jednoduché okno: hore nápis, dole tlačidlo.
 
-```python
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
+```text
+Importuj: App, Label, Button, BoxLayout
 
-class MojaApp(App):
-    def build(self) -> BoxLayout:
-        koren = BoxLayout(orientation="vertical")
-        koren.add_widget(Label(text="Zatiaľ nič"))
-        koren.add_widget(Button(text="Klikni ma"))
-        return koren
+Trieda MojaApp (je to App):
+    build():
+        koreň = zvislý BoxLayout
+        do koreňa pridaj Label s textom "Zatiaľ nič"
+        do koreňa pridaj Button s textom "Klikni ma"
+        vráť koreň
 
-MojaApp().run()
+Spusti MojaApp
 ```
 
 **Otázka:** Klikni na tlačidlo. Čo sa stane? (Odpoveď: nič — a to dnes zmeníme.)
@@ -38,25 +37,24 @@ MojaApp().run()
 
 Chceme, aby sa po stlačení tlačidla niečo stalo. Na to appke pridáme **vlastnú funkciu** — kúsok kódu, ktorý sa spustí **až vtedy, keď na tlačidlo klikneme**.
 
-```python
-from kivy.app import App
-from kivy.uix.button import Button
+```text
+Importuj: App, Button
 
-class MojaApp(App):
-    def build(self) -> Button:
-        tlacidlo = Button(text="Klikni ma")
-        tlacidlo.bind(on_press=self.klik)   # keď sa stlačí, zavolaj funkciu self.klik
-        return tlacidlo
+Trieda MojaApp:
+    build():
+        tlacidlo = Button s textom "Klikni ma"
+        naviaž tlačidlo: keď sa stlačí (on_press) → zavolaj funkciu klik
+        vráť tlacidlo
 
-    def klik(self, instancia):
-        print("Niekto ma klikol!")
+    funkcia klik(self, instancia):
+        vypíš do terminálu "Niekto ma klikol!"
 
-MojaApp().run()
+Spusti MojaApp
 ```
 
 Dve nové veci:
-- `tlacidlo.bind(on_press=self.klik)` — povieme tlačidlu: *„keď ťa stlačia, spusti funkciu `klik`."*
-- `def klik(self, instancia):` — to je tá funkcia. Patrí appke, preto má `self`. `instancia` je to tlačidlo, ktoré nás zavolalo — zatiaľ ho nepotrebujeme, ale napísané tam byť musí.
+- **naviazanie (`bind`)** — povieme tlačidlu: *„keď ťa stlačia, spusti funkciu `klik`."* Pozor: píšeme **meno** funkcie, nevoláme ju (bez zátvoriek).
+- **vlastná funkcia `klik`** — patrí appke, preto má `self`. `instancia` je to tlačidlo, ktoré nás zavolalo — zatiaľ ho nepotrebujeme, ale napísané tam byť musí.
 
 Výsledok uvidíš **v termináli** (nie v okne). Klikaj viackrát.
 
@@ -68,28 +66,17 @@ Výsledok uvidíš **v termináli** (nie v okne). Klikaj viackrát.
 
 Vypisovať do terminálu je fajn na skúšku, ale chceme to vidieť **v okne**. Nápis (`Label`) si preto **odložíme do appky** (`self.vysledok`), aby sme ho vedeli neskôr zmeniť:
 
-```python
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
+```text
+Trieda MojaApp:
+    build():
+        koreň = zvislý BoxLayout
+        self.vysledok = Label "Zatiaľ nič"     # nápis odlož do appky cez self.
+        tlacidlo = Button "Klikni ma", naviaž on_press → klik
+        do koreňa pridaj self.vysledok a tlacidlo
+        vráť koreň
 
-class MojaApp(App):
-    def build(self) -> BoxLayout:
-        koren = BoxLayout(orientation="vertical")
-
-        self.vysledok = Label(text="Zatiaľ nič")   # odložíme si nápis do appky
-        tlacidlo = Button(text="Klikni ma")
-        tlacidlo.bind(on_press=self.klik)
-
-        koren.add_widget(self.vysledok)
-        koren.add_widget(tlacidlo)
-        return koren
-
-    def klik(self, instancia):
-        self.vysledok.text = "Klikol si!"        # zmeníme nápis
-
-MojaApp().run()
+    funkcia klik(self, instancia):
+        zmeň self.vysledok.text na "Klikol si!"
 ```
 
 **Prečo `self.vysledok`?** Lebo nápis vyrobíme v `build`, ale meníme ho až vo funkcii `klik`. Keď si ho odložíme do appky (`self.`), vidia ho **obe** funkcie.
@@ -102,30 +89,19 @@ MojaApp().run()
 
 Teraz nech appka **počíta**, koľkokrát som klikol. Číslo si tiež odložíme do appky (`self.pocet`) — to je **stav appky**, vec, ktorú si pamätá medzi klikmi.
 
-```python
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
+```text
+Trieda MojaApp:
+    build():
+        koreň = zvislý BoxLayout
+        self.pocet = 0                         # stav: zatiaľ 0 klikov
+        self.vysledok = Label "Klikov: 0"
+        tlacidlo = Button "Klikni ma", naviaž on_press → klik
+        do koreňa pridaj self.vysledok a tlacidlo
+        vráť koreň
 
-class MojaApp(App):
-    def build(self) -> BoxLayout:
-        koren = BoxLayout(orientation="vertical")
-
-        self.pocet = 0                             # stav: zatiaľ 0 klikov
-        self.vysledok = Label(text="Klikov: 0")
-        tlacidlo = Button(text="Klikni ma")
-        tlacidlo.bind(on_press=self.klik)
-
-        koren.add_widget(self.vysledok)
-        koren.add_widget(tlacidlo)
-        return koren
-
-    def klik(self, instancia):
-        self.pocet = self.pocet + 1               # zvýšime o 1
-        self.vysledok.text = f"Klikov: {self.pocet}"
-
-MojaApp().run()
+    funkcia klik(self, instancia):
+        zvýš self.pocet o 1
+        prepíš self.vysledok.text na "Klikov: <pocet>"
 ```
 
 **Ľudsky:** `self.pocet` je zásuvka, kam si appka odkladá číslo. Pri každom kliku ho zoberie, pripočíta 1 a nápis prepíše.
@@ -140,10 +116,10 @@ Tlačidlo vie ohlásiť dve chvíle:
 - `on_press` — v momente, keď ho **stlačíš** (prst/myš idú dole),
 - `on_release` — keď ho **pustíš** (prst/myš idú hore).
 
-Skús v etude 3 vymeniť `on_press` za `on_release`:
+Skús v etude 3 pri naviazaní vymeniť `on_press` za `on_release`:
 
-```python
-tlacidlo.bind(on_release=self.klik)
+```text
+naviaž tlačidlo: keď sa pustí (on_release) → zavolaj funkciu klik
 ```
 
 **Otázka:** Stlač tlačidlo a **podrž**, potom pusti. Pri ktorom nastavení sa počítadlo zmení skôr — pri stlačení, alebo až pri pustení?
@@ -156,49 +132,38 @@ Konečne necháme appku **prečítať, čo užívateľ napísal**, a niečo s t�
 
 Políčko (`TextInput`) si tiež odložíme do appky (`self.policko`), aby sme z neho vedeli prečítať text:
 
-```python
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.textinput import TextInput
-from kivy.uix.boxlayout import BoxLayout
+```text
+Importuj navyše: TextInput
 
-class MojaApp(App):
-    def build(self) -> BoxLayout:
-        koren = BoxLayout(orientation="vertical", spacing=10, padding=20)
+Trieda MojaApp:
+    build():
+        koreň = zvislý BoxLayout (spacing, padding)
+        self.policko = TextInput (hint "Zadaj cm", jeden riadok)
+        tlacidlo = Button "Preveď na mm", naviaž on_press → preved
+        self.vysledok = Label "Výsledok: —"
+        do koreňa pridaj políčko, tlačidlo, výsledok
+        vráť koreň
 
-        self.policko = TextInput(hint_text="Zadaj cm", multiline=False)
-        tlacidlo = Button(text="Preveď na mm")
-        tlacidlo.bind(on_press=self.preved)
-        self.vysledok = Label(text="Výsledok: —")
-
-        koren.add_widget(self.policko)
-        koren.add_widget(tlacidlo)
-        koren.add_widget(self.vysledok)
-        return koren
-
-    def preved(self, instancia):
-        text = self.policko.text
-        if text.isdigit():
-            cm = int(text)
-            self.vysledok.text = f"{cm} cm = {cm * 10} mm"
-        else:
+    funkcia preved(self, instancia):
+        text = prečítaj self.policko.text
+        ak je text celé číslo (isdigit):
+            cm = preveď text na číslo (int)
+            self.vysledok.text = "<cm> cm = <cm·10> mm"
+        inak:
             self.vysledok.text = "Napíš celé číslo."
-
-MojaApp().run()
 ```
 
 Dve veci na všimnutie:
 - `self.policko.text` — takto si prečítam, čo je v políčku. Je to **text** (napr. `"5"`), nie číslo.
-- `text.isdigit()` — overí, že v políčku je naozaj (celé) číslo. `int(text)` ho potom premení z textu na číslo, s ktorým sa dá počítať.
+- **overenie `isdigit`** — overí, že v políčku je naozaj (celé) číslo. **Prevod `int(...)`** ho potom premení z textu na číslo, s ktorým sa dá počítať.
 
-**Otázka:** Čo sa stane, keď do políčka napíšeš `ahoj` a klikneš? A prečo tam potrebujeme ten `int(...)`?
+**Otázka:** Čo sa stane, keď do políčka napíšeš `ahoj` a klikneš? A prečo tam potrebujeme ten prevod na číslo (`int`)?
 
 ---
 
 ### Na koniec hodiny — odpovedz si
 
-- Na čo slúži `bind`? Čo doň píšeme?
+- Na čo slúži naviazanie (`bind`)? Čo doň píšeme?
 - Prečo si nápis/políčko odkladáme do appky cez `self.`?
 - Čo znamená „stav appky"? Uveď príklad (z dnešnej hodiny).
 
@@ -210,18 +175,18 @@ V téme 03 sme postavili **vzhľad** kalkulačky (dve políčka a výsledok). Te
 
 Poskladaj okno: hore nadpis, pod ním dve políčka (`self.cislo1`, `self.cislo2`), tlačidlo `=` a dole `Label` na výsledok (`self.vysledok`). Tlačidlo naviaž na funkciu `spocitaj`:
 
-```python
-def spocitaj(self, instancia):
-    a = self.cislo1.text
-    b = self.cislo2.text
-    if a.isdigit() and b.isdigit():
-        self.vysledok.text = f"Výsledok: {int(a) + int(b)}"
-    else:
+```text
+funkcia spocitaj(self, instancia):
+    a = prečítaj self.cislo1.text
+    b = prečítaj self.cislo2.text
+    ak sú a aj b celé čísla (isdigit):
+        self.vysledok.text = "Výsledok: <a + b ako čísla>"
+    inak:
         self.vysledok.text = "Zadaj dve celé čísla."
 ```
 
-*(Celé riešenie je v učiteľskej ukážke — ale skús najprv sám.)*
+*(Skús najprv sám — podľa receptu. Keď budeš mať hotovo, porovnaj s učiteľkiným riešením.)*
 
 Ďalšie nápady:
 1. **Vynuluj.** Pridaj druhé tlačidlo `Vynuluj`, ktoré počítadlo (etuda 3) vráti na 0.
-2. **Odčítanie.** Sprav z kalkulačky odčítačku (`int(a) - int(b)`). Zvládol by si tlačidlá na `+` aj `−` naraz?
+2. **Odčítanie.** Sprav z kalkulačky odčítačku. Zvládol by si tlačidlá na `+` aj `−` naraz?
