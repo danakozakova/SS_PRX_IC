@@ -8,7 +8,7 @@ Pracujeme v `app.py`. Keď niečo nefunguje, prvé je **prečítať chybu v term
 
 > Spustenie: v termináli VS Code (s aktívnym `.venv`) napíš `python app.py`.
 
-> **Ako čítať pseudokód nižšie:** je to **recept**, nie hotový kód na skopírovanie. Hovorí, *čo* má appka spraviť a v akom poradí. Tvoja úloha je prepísať každý krok do skutočného Pythonu — na presné názvy, zátvorky a odsadenie prídeš sám (a práve to sa dnes učíš).
+> **Ako čítať kostru pod každou etudou:** hlavičky (`Trieda`, `build()`, `funkcia …`) ti ukazujú, čo appka má mať. V tele je **slovom popísané, čo má daná časť robiť** — nie hotový kód. Ako to presne v Pythone zapíšeš (zátvorky, `self.`, odsadenie), je na tebe.
 
 ---
 
@@ -16,17 +16,10 @@ Pracujeme v `app.py`. Keď niečo nefunguje, prvé je **prečítať chybu v term
 
 Aby sme mali čo klikať a kam písať výsledok, poskladáme si z minula jednoduché okno: hore nápis, dole tlačidlo.
 
-```text
-Importuj: App, Label, Button, BoxLayout
-
-Trieda MojaApp (je to App):
+```
+Trieda MojaApp:
     build():
-        koreň = zvislý BoxLayout
-        do koreňa pridaj Label s textom "Zatiaľ nič"
-        do koreňa pridaj Button s textom "Klikni ma"
-        vráť koreň
-
-Spusti MojaApp
+        Okno so zvislým usporiadaním: hore nápis „Zatiaľ nič", pod ním tlačidlo „Klikni ma"
 ```
 
 **Otázka:** Klikni na tlačidlo. Čo sa stane? (Odpoveď: nič — a to dnes zmeníme.)
@@ -37,19 +30,13 @@ Spusti MojaApp
 
 Chceme, aby sa po stlačení tlačidla niečo stalo. Na to appke pridáme **vlastnú funkciu** — kúsok kódu, ktorý sa spustí **až vtedy, keď na tlačidlo klikneme**.
 
-```text
-Importuj: App, Button
-
+```
 Trieda MojaApp:
     build():
-        tlacidlo = Button s textom "Klikni ma"
-        naviaž tlačidlo: keď sa stlačí (on_press) → zavolaj funkciu klik
-        vráť tlacidlo
+        Vytvor tlačidlo „Klikni ma" a nastav, aby sa pri stlačení zavolala funkcia klik
 
     funkcia klik(self, instancia):
-        vypíš do terminálu "Niekto ma klikol!"
-
-Spusti MojaApp
+        vypíše do terminálu „Niekto ma klikol!"
 ```
 
 Dve nové veci:
@@ -66,17 +53,13 @@ Výsledok uvidíš **v termináli** (nie v okne). Klikaj viackrát.
 
 Vypisovať do terminálu je fajn na skúšku, ale chceme to vidieť **v okne**. Nápis (`Label`) si preto **odložíme do appky** (`self.vysledok`), aby sme ho vedeli neskôr zmeniť:
 
-```text
+```
 Trieda MojaApp:
     build():
-        koreň = zvislý BoxLayout
-        self.vysledok = Label "Zatiaľ nič"     # nápis odlož do appky cez self.
-        tlacidlo = Button "Klikni ma", naviaž on_press → klik
-        do koreňa pridaj self.vysledok a tlacidlo
-        vráť koreň
+        Vytvor nápis (odlož si ho do appky — budeš ho meniť) a tlačidlo, ktoré pri stlačení zavolá funkciu klik
 
     funkcia klik(self, instancia):
-        zmeň self.vysledok.text na "Klikol si!"
+        zmení text nápisu na „Klikol si!"
 ```
 
 **Prečo `self.vysledok`?** Lebo nápis vyrobíme v `build`, ale meníme ho až vo funkcii `klik`. Keď si ho odložíme do appky (`self.`), vidia ho **obe** funkcie.
@@ -89,19 +72,13 @@ Trieda MojaApp:
 
 Teraz nech appka **počíta**, koľkokrát som klikol. Číslo si tiež odložíme do appky (`self.pocet`) — to je **stav appky**, vec, ktorú si pamätá medzi klikmi.
 
-```text
+```
 Trieda MojaApp:
     build():
-        koreň = zvislý BoxLayout
-        self.pocet = 0                         # stav: zatiaľ 0 klikov
-        self.vysledok = Label "Klikov: 0"
-        tlacidlo = Button "Klikni ma", naviaž on_press → klik
-        do koreňa pridaj self.vysledok a tlacidlo
-        vráť koreň
+        Zapamätaj si počet klikov (na začiatku 0). Vytvor nápis „Klikov: 0" a tlačidlo, ktoré pri stlačení zavolá funkciu klik
 
     funkcia klik(self, instancia):
-        zvýš self.pocet o 1
-        prepíš self.vysledok.text na "Klikov: <pocet>"
+        zvýši počet o 1 a prepíše nápis na aktuálny počet
 ```
 
 **Ľudsky:** `self.pocet` je zásuvka, kam si appka odkladá číslo. Pri každom kliku ho zoberie, pripočíta 1 a nápis prepíše.
@@ -116,11 +93,7 @@ Tlačidlo vie ohlásiť dve chvíle:
 - `on_press` — v momente, keď ho **stlačíš** (prst/myš idú dole),
 - `on_release` — keď ho **pustíš** (prst/myš idú hore).
 
-Skús v etude 3 pri naviazaní vymeniť `on_press` za `on_release`:
-
-```text
-naviaž tlačidlo: keď sa pustí (on_release) → zavolaj funkciu klik
-```
+> To isté ako etuda 3, len v `build` nastav tlačidlo tak, aby sa funkcia `klik` volala pri **pustení** (`on_release`) namiesto stlačenia (`on_press`).
 
 **Otázka:** Stlač tlačidlo a **podrž**, potom pusti. Pri ktorom nastavení sa počítadlo zmení skôr — pri stlačení, alebo až pri pustení?
 
@@ -132,25 +105,13 @@ Konečne necháme appku **prečítať, čo užívateľ napísal**, a niečo s t�
 
 Políčko (`TextInput`) si tiež odložíme do appky (`self.policko`), aby sme z neho vedeli prečítať text:
 
-```text
-Importuj navyše: TextInput
-
+```
 Trieda MojaApp:
     build():
-        koreň = zvislý BoxLayout (spacing, padding)
-        self.policko = TextInput (hint "Zadaj cm", jeden riadok)
-        tlacidlo = Button "Preveď na mm", naviaž on_press → preved
-        self.vysledok = Label "Výsledok: —"
-        do koreňa pridaj políčko, tlačidlo, výsledok
-        vráť koreň
+        Vytvor pole na zadanie cm (odlož si ho do appky), tlačidlo „Preveď na mm" (naviaž ho na funkciu preved) a nápis na výsledok
 
     funkcia preved(self, instancia):
-        text = prečítaj self.policko.text
-        ak je text celé číslo (isdigit):
-            cm = preveď text na číslo (int)
-            self.vysledok.text = "<cm> cm = <cm·10> mm"
-        inak:
-            self.vysledok.text = "Napíš celé číslo."
+        Prečíta text z poľa. Ak je to celé číslo, ukáže v nápise „X cm = (X·10) mm"; inak ukáže „Napíš celé číslo."
 ```
 
 Dve veci na všimnutie:
@@ -173,19 +134,16 @@ Dve veci na všimnutie:
 
 V téme 03 sme postavili **vzhľad** kalkulačky (dve políčka a výsledok). Teraz jej pridáme **mozog** — nech naozaj sčíta dve čísla.
 
-Poskladaj okno: hore nadpis, pod ním dve políčka (`self.cislo1`, `self.cislo2`), tlačidlo `=` a dole `Label` na výsledok (`self.vysledok`). Tlačidlo naviaž na funkciu `spocitaj`:
+```
+Trieda KalkulackaApp:
+    build():
+        Vytvor nadpis, dve polia na čísla (odlož si ich do appky), tlačidlo „=" (naviaž ho na funkciu spocitaj) a nápis na výsledok
 
-```text
-funkcia spocitaj(self, instancia):
-    a = prečítaj self.cislo1.text
-    b = prečítaj self.cislo2.text
-    ak sú a aj b celé čísla (isdigit):
-        self.vysledok.text = "Výsledok: <a + b ako čísla>"
-    inak:
-        self.vysledok.text = "Zadaj dve celé čísla."
+    funkcia spocitaj(self, instancia):
+        Prečíta obe polia. Ak sú v oboch celé čísla, ukáže ich súčet; inak vyzve zadať dve celé čísla
 ```
 
-*(Skús najprv sám — podľa receptu. Keď budeš mať hotovo, porovnaj s učiteľkiným riešením.)*
+*(Skús najprv sám — podľa popisu. Keď budeš mať hotovo, porovnaj s učiteľkiným riešením.)*
 
 Ďalšie nápady:
 1. **Vynuluj.** Pridaj druhé tlačidlo `Vynuluj`, ktoré počítadlo (etuda 3) vráti na 0.
